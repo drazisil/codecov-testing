@@ -2,9 +2,21 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:12.16.2-browsers
     steps:
       - checkout
-      - run: npm init -y
-      - run: npx jest --coverage --collectCoverageFrom=src/*.js
-      - run: bash <(curl -s https://codecov.io/bash)
+      - run: |
+          curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step
+
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+
+          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+
+          gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+
+          shasum -a 256 -c codecov.SHA256SUM
+
+          chmod +x codecov
+          ./codecov -v
