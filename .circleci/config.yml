@@ -7,6 +7,8 @@ jobs:
     steps:
       - checkout
       - run: |
+          echo $NODE_OPTIONS
+      
           curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step
 
           curl -Os https://uploader.codecov.io/latest/linux/codecov
